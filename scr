@@ -1,1 +1,84 @@
-hii
+import java.util.*;
+
+class D implements Comparable<D> {
+    private int d, m, y;
+    
+    public D(int d, int m, int y) {
+        if (vD(d, m, y)) {
+            this.d = d;
+            this.m = m;
+            this.y = y;
+        } else {
+            throw new IllegalArgumentException("Invalid date");
+        }
+    }
+    
+    private boolean lY(int y) {
+        return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
+    }
+    
+    private boolean vD(int d, int m, int y) {
+        if (y < 1 || m < 1 || m > 12 || d < 1) return false;
+        int[] dM = {31, lY(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        return d <= dM[m - 1];
+    }
+    
+    public void uD(int d, int m, int y) {
+        if (vD(d, m, y)) {
+            this.d = d;
+            this.m = m;
+            this.y = y;
+        } else {
+            throw new IllegalArgumentException("Invalid date");
+        }
+    }
+    
+    public String gDW() {
+        Calendar c = new GregorianCalendar(y, m - 1, d);
+        String[] dL = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        return dL[c.get(Calendar.DAY_OF_WEEK) - 1];
+    }
+    
+    public int cD(D o) {
+        Calendar c1 = new GregorianCalendar(y, m - 1, d);
+        Calendar c2 = new GregorianCalendar(o.y, o.m - 1, o.d);
+        long diff = Math.abs(c1.getTimeInMillis() - c2.getTimeInMillis());
+        return (int) (diff / (1000 * 60 * 60 * 24));
+    }
+    
+    public void pD() {
+        String[] mL = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        System.out.println(mL[m - 1] + " " + d + ", " + y);
+    }
+    
+    @Override
+    public int compareTo(D o) {
+        if (this.y != o.y) return this.y - o.y;
+        if (this.m != o.m) return this.m - o.m;
+        return this.d - o.d;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<D> dL = new ArrayList<>();
+        try {
+            dL.add(new D(2, 2, 2024));
+            dL.add(new D(10, 2, 2023));
+            dL.add(new D(1, 1, 2021));
+            dL.add(new D(29, 2, 2024));
+            
+            dL.get(0).pD();
+            System.out.println("Day of the week: " + dL.get(0).gDW());
+            
+            System.out.println("Difference in days: " + dL.get(0).cD(dL.get(1)));
+            
+            Collections.sort(dL);
+            System.out.println("Sorted Dates:");
+            for (D d : dL) d.pD();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
